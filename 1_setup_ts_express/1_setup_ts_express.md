@@ -33,30 +33,20 @@ In this workshop, you will learn how to set up a **TypeScript** and **Node.js** 
 
 3. Install TypeScript and necessary dependencies:
    ```sh
-   npm install --save-dev typescript ts-node @types/node @types/express nodemon
+   npm install --save-dev typescript ts-node @types/node @types/express nodemon express
    ```
 
-4. Install Express:
-   ```sh
-   npm install express
-   ```
-
-5. Install Express type definitions:
-   ```sh
-   npm install --save-dev @types/express
-   ```
-
-6. Generate a **tsconfig.json** file:
+4. Generate a **tsconfig.json** file:
    ```sh
    npx tsc --init
    ```
 
-7. Update **tsconfig.json** with the following settings:
+5. Update **tsconfig.json** with the following settings:
    ```json
    {
      "compilerOptions": {
-       "target": "ES6",
-       "module": "CommonJS",
+       "target": "es6",
+       "module": "commonjs",
        "outDir": "dist",
        "rootDir": "src",
        "strict": true
@@ -137,13 +127,14 @@ app.post('/users', (req, res) => {
 });
 
 // Get user by ID
-app.get('/users/:id', (req, res) => {
-    const user = users.find(u => u.id === Number(req.params.id));
-    if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-    }
-    res.json(user);
-});
+app.get('/users/:id', (req: Request<UserParams>, res: Response) => {
+  const user = users.find((u) => u.id === Number(req.params.id));
+  if (!user) {
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+  res.json(user);
+})
 
 // Delete user by ID
 app.delete('/users/:id', (req, res) => {
@@ -178,6 +169,14 @@ Modify `src/index.ts` to use the middleware:
 ```ts
 import errorHandler from './middleware/errorHandler';
 app.use(errorHandler);
+
+app.get('/users/:id', (req: Request<UserParams>, res: Response) => {
+  const user = users.find((u) => u.id === Number(req.params.id));
+  if (!user) {
+    throw new Error("User not found");
+  }
+  res.json(user);
+})
 ```
 
 ---
