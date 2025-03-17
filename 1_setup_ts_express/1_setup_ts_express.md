@@ -25,30 +25,34 @@ In this workshop, you will learn how to set up a **TypeScript** and **Node.js** 
    mkdir ts-node-express-workshop
    cd ts-node-express-workshop
    ```
+2. Install typescript global
+   ```sh
+   npm install -g typescript
+   ```
 
-2. Initialize a **Node.js** project:
+3. Initialize a **Node.js** project:
    ```sh
    npm init -y
    ```
 
-3. Install TypeScript and necessary dependencies:
+4. Install TypeScript and necessary dependencies:
    ```sh
    npm install --save-dev typescript ts-node @types/node @types/express nodemon express
    ```
 
-4. Generate a **tsconfig.json** file:
+5. Generate a **tsconfig.json** file:
    ```sh
    npx tsc --init
    ```
 
-5. Update **tsconfig.json** with the following settings:
+6. Update **tsconfig.json** with the following settings:
    ```json
    {
      "compilerOptions": {
        "target": "es6",
        "module": "commonjs",
-       "outDir": "dist",
-       "rootDir": "src",
+       "outDir": "./dist",
+       "rootDir": "./src",
        "strict": true
      }
    }
@@ -85,7 +89,7 @@ In this workshop, you will learn how to set up a **TypeScript** and **Node.js** 
 3. Add a **start script** in `package.json`:
    ```json
    "scripts": {
-     "start": "node dist/index.js",
+     "start": "npx tsc && node dist/index.js",
      "dev": "nodemon src/index.ts"
    }
    ```

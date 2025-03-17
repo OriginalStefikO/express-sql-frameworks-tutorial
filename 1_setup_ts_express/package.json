@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "start": "npx tsc && node dist/index.js",
     "dev": "nodemon src/index.ts"
   },
   "keywords": [],
@@ -17,5 +17,8 @@
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "1_setup_ts_express": "file:"
   }
 }
