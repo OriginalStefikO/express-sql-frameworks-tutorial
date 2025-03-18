@@ -1,13 +1,13 @@
-# Workshop: Authentication with MySQL (XAMPP) and Bcrypt in Node.js
+# Workshop: Authentication with MySQL (XAMPP) and JWT in Node.js
 
 ## Workshop Overview
-In this workshop, you will learn how to implement authentication in a **Node.js** application using **MySQL (XAMPP)** and **bcrypt** to securely check hashed passwords. After a successful login, the user will see a message: **"You are logged in"**. You will also learn how to create a user using an HTML form.
+In this workshop, you will learn how to implement authentication in a **Node.js** application using **MySQL (XAMPP)** and **JWT (JSON Web Token)** to securely authenticate users. After a successful login, the user will receive a **JWT token** that can be used for authorization in protected routes.
 
 ### Learning Goals
 - Set up MySQL with XAMPP
 - Create and seed a user database
 - Build an HTML form for user registration and login
-- Implement authentication in Node.js using Express and bcrypt
+- Implement authentication in Node.js using Express, bcrypt, and JWT
 
 ---
 
@@ -41,7 +41,7 @@ In this workshop, you will learn how to implement authentication in a **Node.js*
 ## Step 2: Creating the Registration and Login Forms
 
 ### Registration Form
-Create a `public/register.html` file with the following code:
+Create a `public/register/index.html` file with the following code:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -55,15 +55,16 @@ Create a `public/register.html` file with the following code:
     <form action="/register" method="POST">
         <label for="first_name">First Name:</label>
         <input type="text" name="first_name" required>
-        <br>
+        
         <label for="last_name">Last Name:</label>
         <input type="text" name="last_name" required>
-        <br>
+        
         <label for="password">Password:</label>
         <input type="password" name="password" required>
-        <br>
+        
         <button type="submit">Register</button>
     </form>
+    <p>Already have an account? <a href="/">Login here</a></p>
 </body>
 </html>
 ```
@@ -83,15 +84,16 @@ Create a `public/index.html` file with the following code:
     <form action="/login" method="POST">
         <label for="first_name">First Name:</label>
         <input type="text" name="first_name" required>
-        <br>
+        
         <label for="last_name">Last Name:</label>
         <input type="text" name="last_name" required>
-        <br>
+        
         <label for="password">Password:</label>
         <input type="password" name="password" required>
-        <br>
+        
         <button type="submit">Login</button>
     </form>
+    <p>Don't have an account? <a href="/register">Register here</a></p>
 </body>
 </html>
 ```
@@ -102,17 +104,15 @@ Create a `public/index.html` file with the following code:
 
 1. Initialize the project:
    ```sh
-   mkdir auth-mysql-workshop
-   cd auth-mysql-workshop
    npm init -y
    ```
 2. Install dependencies:
    ```sh
-   npm install express mysql2 bcryptjs dotenv cors body-parser
+   npm install express mysql2 bcrypt dotenv cors body-parser jsonwebtoken
    ```
 3. Install TypeScript and types:
    ```sh
-   npm install --save-dev typescript @types/node @types/express @types/bcryptjs
+   npm install --save-dev typescript @types/node @types/express @types/bcrypt @types/jsonwebtoken
    ```
 4. Generate a **tsconfig.json**:
    ```sh
@@ -129,6 +129,7 @@ Create a `public/index.html` file with the following code:
    DB_USER=root
    DB_PASSWORD=
    DB_NAME=auth_workshop_db
+   JWT_SECRET=supersecretkey
    ```
 2. Create a `src/config/db.ts` file:
    ```ts
@@ -149,22 +150,34 @@ Create a `public/index.html` file with the following code:
 
 ---
 
-## Step 5: Implementing Authentication
+## Step 5: Implementing Authentication with JWT
 
 1. Create `src/index.ts` and set up the authentication routes:
    ```ts
    import express from 'express';
-   import bcrypt from 'bcryptjs';
+   import bcrypt from 'bcrypt';
    import cors from 'cors';
    import bodyParser from 'body-parser';
+   import jwt from 'jsonwebtoken';
+   import dotenv from 'dotenv';
    import pool from './config/db';
 
+   dotenv.config();
    const app = express();
    const PORT = 3000;
+   const SECRET_KEY = process.env.JWT_SECRET || 'defaultsecret';
 
    app.use(cors());
    app.use(bodyParser.urlencoded({ extended: true }));
+   app.use(express.urlencoded({ extended: true }));
    app.use(express.static('public'));
+
+   interface User {
+       id: number;
+       first_name: string;
+       last_name: string;
+       pwd_hash: string;
+   }
 
    app.post('/register', async (req, res) => {
        const { first_name, last_name, password } = req.body;
@@ -191,11 +204,11 @@ Create a `public/index.html` file with the following code:
            );
 
            if (Array.isArray(rows) && rows.length > 0) {
-               const user = rows[0] as { pwd_hash: string };
-
+               const user = rows[0] as User;
                const passwordMatch = await bcrypt.compare(password, user.pwd_hash);
                if (passwordMatch) {
-                   return res.send('You are logged in');
+                   const token = jwt.sign({ first_name, last_name }, SECRET_KEY, { expiresIn: '1h' });
+                   return res.json({ token });
                }
            }
            res.status(401).send('Invalid credentials');
@@ -215,10 +228,8 @@ Create a `public/index.html` file with the following code:
 You have successfully implemented:
 - User registration with password hashing
 - Secure login authentication using bcrypt
-
-### Next Steps
-- Implement JWT authentication
-- Add user profile management
+- JWT authentication for protected routes
+- Navigation between login and registration pages
+- TypeScript interfaces for type safety
 
 Happy coding! 🚀
-
