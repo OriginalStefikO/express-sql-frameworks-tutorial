@@ -84,10 +84,10 @@ In this workshop, you will learn how to set up a **TypeScript** and **Node.js** 
 5. Insert some test data:
    ```sql
     create table users (
-        id INT,
+        id INT AUTO_INCREMENT PRIMARY KEY,
         first_name VARCHAR(50),
         last_name VARCHAR(50),
-        pwd_hash VARCHAR(50)
+        pwd_hash VARCHAR(100)
     );
     insert into users (id, first_name, last_name, pwd_hash) values (1, 'Obidiah', 'Kinver', '$2a$04$bJ1W3S/q0lusVio53LvpaOTJprBDepKCqW/YBN70aG0kenN23LgqK');
     insert into users (id, first_name, last_name, pwd_hash) values (2, 'Laurens', 'Naton', '$2a$04$eH5tGN63xCPE5.jINE43xeeVnFqlgi360yTJRgCIR6vo27wXl8HU.');
