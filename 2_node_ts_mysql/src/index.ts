@@ -43,6 +43,7 @@ app.get('/users', (req, res) => {
 
 app.post('/users', (req, res) => {
     const { name } = req.body;
+    console.log(req.body)
     db.query('INSERT INTO users (name) VALUES (?)', [name], (err, result: ResultSetHeader) => {
         if (err) {
             return res.status(500).json({ error: err.message });
