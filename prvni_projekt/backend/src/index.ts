@@ -38,6 +38,16 @@ app.get('/users', (req, res) => {
     });
 });
 
+app.post('/users', (req, res) => {
+    const { first_name, last_name, year } = req.body;
+    db.query('INSERT INTO users (first_name, last_name, year) VALUES (?, ?, ?)', [first_name, last_name, year], (err, results:any) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({ id: results.insertId, first_name, last_name, year });
+    });
+});
+
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
