@@ -27,6 +27,10 @@ const LoginForm: React.FC = () => {
 
   return (
     <Container component="main" maxWidth="xs">
+      <div>
+        <h1>Hello World</h1>
+        <p>Baf</p>
+      </div>
       <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
         <Typography component="h1" variant="h5" align="center" gutterBottom>
           Login
