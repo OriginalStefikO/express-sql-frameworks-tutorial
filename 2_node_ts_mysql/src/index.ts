@@ -28,10 +28,6 @@ db.connect(err => {
 });
 
 // Routes
-app.get('/', (req, res) => {
-    res.send('Hello, TypeScript with Express and MySQL!');
-});
-
 app.get('/users', (req, res) => {
     db.query('SELECT * FROM users', (err, results) => {
         if (err) {
@@ -41,14 +37,14 @@ app.get('/users', (req, res) => {
     });
 });
 
-app.post('/users', (req, res) => {
-    const { name } = req.body;
+app.post('/api/users', (req, res) => {
+    const { username, email, password } = req.body;
     console.log(req.body)
-    db.query('INSERT INTO users (name) VALUES (?)', [name], (err, result: ResultSetHeader) => {
+    db.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, password], (err, result: ResultSetHeader) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        res.status(201).json({ id: result.insertId, name });
+        res.status(201).json({ id: result.insertId, username, email });
     });
 });
 
