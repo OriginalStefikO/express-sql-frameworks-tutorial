@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mysql, { ResultSetHeader } from 'mysql2';
 import errorHandler from './middleware/errorHandler';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -9,6 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cors());
 
 // Create a MySQL connection
 const db = mysql.createConnection({
@@ -38,8 +40,8 @@ app.get('/users', (req, res) => {
 });
 
 app.post('/api/users', (req, res) => {
+    console.log(req.body);
     const { username, email, password } = req.body;
-    console.log(req.body)
     db.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, password], (err, result: ResultSetHeader) => {
         if (err) {
             return res.status(500).json({ error: err.message });
