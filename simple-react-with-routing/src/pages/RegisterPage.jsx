@@ -1,34 +1,10 @@
 import { Link } from "react-router";
+import { registerUser } from "../scripts/authFunctions";
 
 function RegisterPage() {
-    async function registerUser(formData) {
-      const username = formData.get('username')
-      const email = formData.get('email')
-      const password = formData.get('password')
-
-      try {
-        const response = await fetch('http://localhost:3000/api/users', {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username:username, email:email, password:password }),
-        });
-
-        if (response.ok) {
-          console.log('User registered successfully');
-        } else {
-          console.error('Error registering user', await response.text());
-        }
-      } catch (error) {
-        console.error('Network or server error:', error);
-      }
-    }
-
     return (
       <div>
-        <h1>Register Page</h1>
+        <h1 className="bg-red-500 rounded-xl ">Register Page</h1>
         <p>Please enter your credentials to register.</p>
 
         <form action={registerUser}>
@@ -45,7 +21,7 @@ function RegisterPage() {
           <input type="password" id="re-password" name="re-password" placeholder="Repeat" required />
 
           <button type="submit">Register</button>
-          <p>Already have an account? <Link to="/login">Login</Link></p>
+          <p>Already have an account? <Link to="/auth/login">Login</Link></p>
         </form>
 
       </div>

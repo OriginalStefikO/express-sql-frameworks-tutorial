@@ -20,6 +20,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@auth/express": "^0.10.1",
     "2_node_ts_mysql": "file:",
     "cors": "^2.8.5",
     "dotenv": "^16.4.4",
